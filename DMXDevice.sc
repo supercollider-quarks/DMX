@@ -13,18 +13,21 @@ DMXDevice : SerialPort{
 		var datablob;
 		var cuesize = cue.size + 1;
 		// Int8Array[0] is the DMX start code
-		datablob = this.createSendHeader(cuesize) ++ Int8Array[0] ++ cue.asInt8 ++ this.createFooter;
+		//		datablob = this.createSendHeader(cuesize) ++ Int8Array[0] ++ cue.asInt8 ++ this.createFooter;
+		datablob = this.createSendHeader(cuesize) ++ [0] ++ cue.asInt8 ++ this.createFooter;
 		// add in when testing for real:
-		//this.putAll( datablob );
+		Routine({ this.putAll( datablob );}).play
 	}
 
 	createSendHeader{ arg data_size=512;
 		// subclass responsibility
-		^Int8Array[];
+		//	^Int8Array[];
+		^[]
 	}
 
 	createFooter{
 		// subclass responsibility
-		^Int8Array[];
+		//	^Int8Array[];
+		^[]
 	}
 }

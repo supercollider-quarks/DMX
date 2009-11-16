@@ -7,39 +7,39 @@ GNU/GPL v2.0 or later
 // DMX is a masterclass which contains the DMXCues, and the DMXDevice
 // for now, it is assumed that there is always 1 dmx device
 DMX{
-	classvar <>device;
+	var <>device;
 
-	classvar <>channeloffset=0;
-	classvar <>maxchannels=512;
-	classvar <>autoSet = false;
+	var <>channeloffset=0;
+	var <>maxchannels=512;
+	var <>autoSet = false;
 
 	// map is an IdentityDictionary, which allows you to use names for channels
-	classvar <map;
+	var <map;
 	// cues are all the cues that are defined for this thing
-	classvar <cues;
+	var <cues;
 	// the current light cue, containing the settings for this moment
-	classvar <>currentCue;
+	var <>currentCue;
 
-	classvar <fadeval;
+	var <fadeval;
 
-	/*	*new{
+	*new{
 		^super.new.init;
-		}*/
+	}
 	
-	*initClass{
+	init{
 		map = ();
 		cues = Array.new;
 	}
 
-	*setCurrentMap{ arg name;
+	setCurrentMap{ arg name;
 		map = DMXMap.at( name );
 	}
 
-	*setCue{
+	setCue{
 		device.sendDMX( currentCue );
 	}
 
-	*blackout{ |time,curve|
+	blackout{ |time,curve|
 		if ( time.isNil, {
 			currentCue = DMXCue.new;
 			this.setCue;
@@ -48,7 +48,7 @@ DMX{
 		});
 	}
 
-	*fade{ arg to, time=1.0, curve=\linear, timestep=0.025;
+	fade{ arg to, time=1.0, curve=\linear, timestep=0.040;
 		var spec, startCue, endCue, nsteps, ddmx, curdmx;
 		spec = [0,1,curve].asSpec;
 		startCue = currentCue;
@@ -116,7 +116,7 @@ DMXCue{
 
 	*initClass{
 		ControlSpec.initClass;
-		spec = [0, 256, \linear, 1].asSpec;
+		spec = [0, 255, \linear, 1].asSpec;
 	}
 
 	*new{ arg offset, maxch;
@@ -135,7 +135,7 @@ DMXCue{
 
 	// returns the cue as an Int8Array, for sending it to the device
 	asInt8{
-		^spec.map( data ).as( Int8Array );
+		^spec.map( data ).asInteger; //.as( Int8Array );
 	}
 
 	merge{ |subcue|

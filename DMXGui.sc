@@ -27,7 +27,7 @@ DMXGui{
 		ysize = 105+130+10;
 	
 		w = w ?? { 
-			w = GUI.window.new("DMX Control", Rect(xposScreen, yposScreen, xsize + 10, ysize)).front;
+			w = Window.new("DMX Control", Rect(xposScreen, yposScreen, xsize + 10, ysize)).front;
 			//w.view.background_(Color.black); 
 			w.view.decorator = FlowLayout(Rect(4, 4, w.bounds.width, w.bounds.height), 2@2, 2@2);
 			w;
@@ -41,7 +41,7 @@ DMXGui{
 					{ xposScreen = 0; });
 			});
 
-		showconsole = GUI.button.new( w, Rect( 0, 0, xsize-5, 20 ) ).states_( [ ["Show console"] ] ).action_( { DMXConsole.new( dmx ) } );
+		showconsole = Button.new( w, Rect( 0, 0, xsize-5, 20 ) ).states_( [ ["Show console"] ] ).action_( { DMXConsole.new( dmx ) } );
 
 		//		GUI.staticText.new(w, Rect(0, 0, xsize - 2, 20)).string_("WiiMote" + wiimote.id + wiimote.address )
 		//			.align_(0);
@@ -104,11 +104,11 @@ DMXConsole{
 		counter = counter + 1;
 
 		xsize = 16*37 + 15;
-		ysize = 210;
+		ysize = 220;
 	
 		w = w ?? { 
 			w = GUI.window.new("DMX Console", Rect(xposScreen, yposScreen, xsize + 10, ysize)).front;
-			w.view.decorator = FlowLayout(Rect(4, 4, w.bounds.width, w.bounds.height), 2@2, 2@2);
+			w.view.decorator = FlowLayout( w.bounds, 2@2, 2@2);
 			w;
 		};
 
@@ -127,7 +127,8 @@ DMXConsole{
 		sliders = Array.new;
 		sliderviews = 16.collect{ |it2|
 			var gv;
-			gv = GUI.compositeView.new( tabpane, Rect( 0, 0, 16*35 + 5, 165) );
+			gv = GUI.compositeView.new( tabpane, Rect( 0, 0, 16*37 + 4, 170) );
+			gv.decorator = FlowLayout.new(gv.bounds, 2@2, 2@2);
 			sliders = sliders ++ 16.collect{ |it|
 				DMXSlider.new( dmx, gv, (37*it)+2 ).channel_( it + (16*it2) ).value_(0);
 			};
@@ -186,13 +187,12 @@ DMXSlider{
 	}
 
 	init{ |parent,xoffset|
-		var coff;
-		coff = xoffset; // currently as compositeView is not relative
-		view = GUI.compositeView.new( parent, Rect( xoffset, 0, 35, 150 ));
-		slider = GUI.slider.new( view, Rect( coff, 0, 35, 80 ) ).action_({ |slid|
+		view = GUI.compositeView.new( parent, 35@152 );
+		view.decorator = FlowLayout.new( view.bounds, 2@2, 2@2 );
+		slider = GUI.slider.new( view, 35@80 ).action_({ |slid|
 			val.valueAction_( slid.value );
 		});
-		val = GUI.numberBox.new( view, Rect( coff, 82, 35, 20 ) ).action_({ |nb|
+		val = GUI.numberBox.new( view, 35@20 ).action_({ |nb|
 			var curVal;
 			curVal = nb.value.clip(0,1);
 			dmx.currentCue.data.put( chan.value, curVal );
@@ -201,8 +201,8 @@ DMXSlider{
 			slider.value = curVal;
 			//slider.value = nb.value;
 		}).step_(1/256);
-		chan = GUI.numberBox.new( view, Rect( coff, 104, 35, 20 ) );
-		nam = GUI.textField.new( view, Rect( coff, 126, 35, 20 ) ).action_({ |tf|
+		chan = GUI.numberBox.new( view, 35@20 );
+		nam = GUI.textField.new( view, 35@20 ).action_({ |tf|
 			dmx.map.put( tf.value.asSymbol, chan.value.asInteger );
 		});
 	}
