@@ -7,15 +7,17 @@ GNU/GPL v2.0 or later
 EntTecDMXUSBPro : DMXDevice {
 
 	*new {
-		| port,
+		| port |
+		/*/
 		  baudrate(57600),
 		  databits(8),
 		  stopbit(true),
 		  parity(nil),
 		  crtscts(false),
 		  xonxoff(false)
-		  exclusive(false) |
-		^super.new( port, baudrate, databits, stopbit, parity, crtscts, xonxoff, exclusive );
+			exclusive(false)	| 
+		*/
+		^super.new( port, 57600, 8, true, nil, false, false, false );
 	}
 
 	/*

@@ -11,10 +11,10 @@ DMX{
 
 	var <>channeloffset=0;
 	var <>maxchannels=512;
-	var <>autoSet = false;
+	//	var <>autoSet = false;
 
 	// map is an IdentityDictionary, which allows you to use names for channels
-	var <map;
+	//	var <map;
 	// cues are all the cues that are defined for this thing
 	var <cues;
 	// the current light cue, containing the settings for this moment
@@ -27,13 +27,15 @@ DMX{
 	}
 	
 	init{
-		map = ();
+		//		map = IdentityDictionary.new;
 		cues = Array.new;
 	}
 
+	/*
 	setCurrentMap{ arg name;
 		map = DMXMap.at( name );
 	}
+	*/
 
 	setCue{
 		device.sendDMX( currentCue );
@@ -87,11 +89,11 @@ DMXMap{
 	classvar maps;
 	
 	*initClass{
-		maps = ();
+		maps = IdentityDictionary.new;
 	}
 
 	*addMap{ arg name;
-		maps.put( name, () );
+		maps.put( name, IdentityDictionary.new );
 	}
 	
 	*at{ arg name;
