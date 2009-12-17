@@ -59,7 +59,7 @@ DMX{
 		}, {
 			endCue = to;
 		});
-		endCue.data.postln;
+		//		endCue.data.postln;
 		nsteps = round(time/timestep);
 		// can't do more than 256 steps, due to 8bit resolution
 		if ( nsteps > 256, { nsteps = 256; timestep = time/nsteps; } );
