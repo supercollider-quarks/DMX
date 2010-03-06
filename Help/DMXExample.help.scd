@@ -1,66 +1,48 @@
-/*
-DMX framework for supercollider
-(c) 2007-9 Marije Baalman (nescivi)
-GNU/GPL v2.0 or later
-Creative Commons Attribution Share Alike v3.0
-*/
-
-(
-// create a new instance of DMX
+// This creates an instance of the DMX class (see the DMX quark):
 d = DMX.new;
-// create a DMX device
-e = EntTecDMXUSBPro.new( 0 );
+// create a DMX device (the argument is the serial path at which it can be reached; see SerialPort.devices)
+e = EntTecDMXUSBPro.new( "/dev/ttyUSB0" );
 // set the device for DMX
 d.device = e;
 
+
 // create an empty cue:
 c = DMXCue.new;
+// these are the work lights in one part of the room (DMX channels 98, 100, 102)
+([98,100,102]-1).do{ |it| c.put( it, 1 ); };
 
-// add the cue to DMX:
-d.cues.add( c );
+d.currentCue = c;
+d.setCue;
 
-c.put( 5, 0.5 );
-c.put( 20, 1 );
+// create an empty cue for darkness:
+b = DMXCue.new;
 
-// set the current cue:
-d.currentCue = d.cues.at( 0 );
+// b is darkness:
+d.currentCue = b;
+d.setCue;
 
+// these are the 9 dmx channels for a ring of lights:
+~dmxRing = [ 55, 52, 67, 68, 71, 72, 75, 61, 58 ];
 
-a = DMXSubCue.new;
-a.put( 3, 0.1 );
-a.put( 15, 1 );
-)
+// this is the subcue we'll use for the ring of lights
+// subcues only set the channels that are explicitly set, not other channels
+~dmxRingCue = DMXSubCue.new;
 
-v = DMXGui( d );
+// this is the subcue we'll use for the light spot in the middle
+~dmxSpot = DMXSubCue.new;
 
-a.data
+// these is one dmx channel for the spot:
+~dmxSpotL = 87;
 
-d.currentCue.data
-d.map
-d.map.findKeyForValue( 3 )
-
-d.map.at(\table)
-
-d.map.put( \table, 2);
-
-d.fade( DMXCue.new, 10.0 );
-c = DMXCue.new
-c.data
-d.fade( c, 10.0 );
-
-b = d.currentCue.deepCopy;
-b.merge( a );
-b.data
-b.data * 0.8 + d.currentCue.data * 0.2
-
-c.data
-
-a.data
-a.data.indices
-
-GUI.scrollPane
-
-Tdef( \dmxfade ).envir
-Tdef( \dmxfade ).envir.fadeval
-
-Tdef( \dmxfade ).set( \speed, 2 );
+(
+Tdef( \dmxtest, { loop{
+	// set all channels in the ring to zero:
+	~dmxRing.do{ |jt| ~dmxRingCue.put( jt, 0 ); };
+	// set a random channel to 1
+	~dmxRingCue.put( ~dmxRing.choose, 1 );
+	// fade to the updated cue:
+	d.fade( ~dmxRingCue, 0.5, 'linear', 0.1 );
+	1.0.wait;
+};
+} );
+);
