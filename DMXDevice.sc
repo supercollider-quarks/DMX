@@ -8,13 +8,17 @@ GNU/GPL v2.0 or later
 // DMXDevice just encapsulates the common properties of DMXDevices
 
 DMXDevice : SerialPort{
-	
+
 	sendDMX{ arg cue;
 		var datablob;
 		var cuesize = cue.size + 1;
 		// Int8Array[0] is the DMX start code
 		//		datablob = this.createSendHeader(cuesize) ++ Int8Array[0] ++ cue.asInt8 ++ this.createFooter;
-		datablob = this.createSendHeader(cuesize) ++ [0] ++ cue.asInt8 ++ this.createFooter;
+        if ( cue.mode == \float ){
+            datablob = this.createSendHeader(cuesize) ++ [0] ++ cue.asInt8 ++ this.createFooter;
+        }{
+            datablob = this.createSendHeader(cuesize) ++ [0] ++ cue ++ this.createFooter;
+        };
 		// add in when testing for real:
 		Routine({ this.putAll( datablob );}).play
 	}

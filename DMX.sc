@@ -25,7 +25,7 @@ DMX{
 	*new{
 		^super.new.init;
 	}
-	
+
 	init{
 		//		map = IdentityDictionary.new;
 		cues = Array.new;
@@ -54,7 +54,7 @@ DMX{
 		var spec, startCue, endCue, nsteps, ddmx, curdmx;
 		spec = [0,1,curve].asSpec;
 		startCue = currentCue;
-		if ( to.isKindOf( DMXSubCue ), { 
+		if ( to.isKindOf( DMXSubCue ), {
 			endCue = currentCue.deepCopy.merge( to );
 		}, {
 			endCue = to;
@@ -87,7 +87,7 @@ DMX{
 
 DMXMap{
 	classvar maps;
-	
+
 	*initClass{
 		maps = IdentityDictionary.new;
 	}
@@ -95,7 +95,7 @@ DMXMap{
 	*addMap{ arg name;
 		maps.put( name, IdentityDictionary.new );
 	}
-	
+
 	*at{ arg name;
 		^maps.at( name );
 	}
@@ -113,7 +113,10 @@ DMXCue{
 
 	var <>channeloffset=0;
 	var <>maxchannels=512;
-	var <>data;
+    var <>data;
+
+    var <>mode;
+
 	classvar spec;
 
 	*initClass{
@@ -126,6 +129,7 @@ DMXCue{
 	}
 
 	init{ arg offset, maxch;
+        mode = \float;
 		channeloffset = offset ? channeloffset;
 		maxchannels = maxch ? maxchannels;
 		data = Array.fill( this.size, 0 );
@@ -162,7 +166,7 @@ DMXSubCue{
 		^super.new.init;
 	}
 
-	init{ 
+	init{
 		data = Order.new;
 	}
 
