@@ -83,6 +83,12 @@ DMX{
 		});
 		Tdef( \dmxfade ).play;
 	}
+
+    solo { arg channel=0, level=0.8, fadeTime=0.1;
+        var cue = DMXCue.new;
+        cue[channel] = level;
+        this.fade(cue, fadeTime);
+    }
 }
 
 DMXMap{
